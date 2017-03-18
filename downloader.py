@@ -1,6 +1,5 @@
 import urllib.request
 import urllib.error
-import re
 import urllib.parse
 import urlparse
 import time
@@ -66,8 +65,8 @@ class Throttle:
         domain = urlparse.urlsplit(url).netloc
         last_accessed=self.domain.get(domain)
         if self.delay>0 and last_accessed is not None:
-            sleep_secs = self.delay-(datatime.now()-last_accessed.seconds)
+            sleep_secs = self.delay-(datetime.now()-last_accessed.seconds)
             if sleep_secs > 0:
                 tiem.sleep(sleep_secs)
-            self.domain[domain]=datatime.now()
+            self.domain[domain]=datetime.now()
 
