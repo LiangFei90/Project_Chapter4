@@ -34,10 +34,11 @@ class Downloader:
             headers={'User_agent':self.user_agent}
             result=self.download(url,headers,proxy,self.num_retries)
             if self.cache:
-                self.cache[url]=result
-        return result['html']                                                                    #MARK
+                self.cache[url]=result                                                           # Create Foladers and caches and write caches
+        return result['html']                                                                    # MARK
 
     def download(self,url,headers,proxy,num_retries,data=None):
+        code=None
         print('Downloading:',url)
         request=urllib.request.Request(url,data,headers or {})
         opener = urllib.request.build_opener()
