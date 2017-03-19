@@ -1,7 +1,6 @@
 import urllib.request
 import urllib.error
 import urllib.parse
-import urlparse
 import time
 import random
 from datetime import datetime,timedelta
@@ -13,20 +12,22 @@ class Downloader:
         self.throttle=Throttle(delay)
         self.user_agent=user_agent
         self.proxies=proxies
-        self.num_retires=num_retries
+        self.num_retries=num_retries
         self.opener=opener
         self.cache=cache
 
     def __call__(self,url):
+        #print('It is __call__')
         result=None
-        if self.catch:
+        if self.cache:
             try:
-                result=self.catch[url]
+                result=self.cache[url]
+                #print (result)
             except KeyError:
                 pass
-        else:
-            if self.num_retires>0 and 500<=result['code']<600:
-                result=None
+            else:
+                if self.num_retries > 0 and 500 <= result['code'] < 600:
+                    result = None
         if result is None:
             self.throttle.wait(url)
             proxy=random.choice(proxies ) if self.proxies else None
@@ -34,10 +35,11 @@ class Downloader:
             result=self.download(url,headers,proxy,self.num_retries)
             if self.cache:
                 self.cache[url]=result
+        return result['html']                                                                    #MARK
 
-    def download(self,heasers,proxy,num_retries):
-        print('Downloading:'url)
-        request=urllib.request.Request(url.data.handers or {})
+    def download(self,url,headers,proxy,num_retries,data=None):
+        print('Downloading:',url)
+        request=urllib.request.Request(url,data,headers or {})
         opener = urllib.request.build_opener()
         if proxy:
             proxy_params = {urlparse.urlparse(url).scheme:proxy}
@@ -45,9 +47,10 @@ class Downloader:
         try:
             response=opener.open(request)
             html=response.read()
+            #print('downloader_html:',html)
             code=response.code
         except Exception as e:
-            print ('Downloading Error :'str(e))
+            print ('Downloading Error :',str(e))
             html=''
             if hasattr(e,'code'):
                 code=e.code
@@ -55,14 +58,15 @@ class Downloader:
                     return self._get(url,heasers,proxy,num_retries-1,data)
                 else:
                     code = None
-        return {'html':html,'code':code}
+        return {'html':html,'coed':code}
 
 class Throttle:
     def __init__(self,delay):
         self.delay=delay
         self.domain={}
+
     def wait(self,url):
-        domain = urlparse.urlsplit(url).netloc
+        domain = urllib.request.urlsplit(url).netloc
         last_accessed=self.domain.get(domain)
         if self.delay>0 and last_accessed is not None:
             sleep_secs = self.delay-(datetime.now()-last_accessed.seconds)

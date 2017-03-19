@@ -6,10 +6,11 @@ import time
 from datetime import datetime
 import re
 import types
+from downloader import Downloader
 # from CallBack import scrape_callback as  scrape_callback
 
 def link_crawler(seed_url,link_regex=None,delay=2,max_depth=-1,max_urls=-1,headers=None,
-                 user_agent='wswp',proxy=None,num_retries=-1,scrape_callback=0):
+                 user_agent='wswp',proxy=None,num_retries=-1,scrape_callback=0,cache=None):
     """
     Crawl from the given seed url follwoing links matched by link_regex
     """
@@ -17,17 +18,15 @@ def link_crawler(seed_url,link_regex=None,delay=2,max_depth=-1,max_urls=-1,heade
     seen={seed_url:0}
     num_urls=0
     rp=get_robots(seed_url)
-    print(rp)
-    throttle=Throttle(delay)
-    headers=headers or {}
-    if user_agent:
-        headers['User_agent']=user_agent
+    D = Downloader(delay=delay, user_agent=user_agent, proxies=proxy, num_retries=num_retries, cache=cache)
     while crawl_quene:
         url=crawl_quene.pop()
         depth=seen[url]
         if rp.can_fetch(user_agent,url):
-            throttle.wait(url)
+            #Throttle.wait(url)
             html=D(url)
+            #html=D.download(url, num_retries=num_retries,headers=None,proxy=proxy)
+            #print('link_',html)
             links=[]
             if scrape_callback:
                 links.extend(scrape_callback(url,html)or[])
@@ -72,28 +71,28 @@ class Throttle:
             # update the lase accessed time
             self.domains[domain]=datetime.now()
 
-def download(url,headers,proxy,num_retries,data=None):
-    print('Downloading:',url)
-    request=urllib.request.Request(url,data,headers)
-    opener=urllib.request.build_opener()
-    if proxy:
-        proxy_params={urlparse.urlparse(url).scheme:proxy}
-        opener.add_handler(urllib.request.ProxyHandler(proxy_params))
-    try:
-        response=opener.open(request)
-        html=response.read()
-        code=response.code
-    except urllib.error.URLError as e:
-        print ('Download error:',e.reason)
-        html=''
-        if hasattr(e,'code'):
-            code=e.code
-            if num_retries>0 and  500<=code <=600:
-                # retry 5xx errors
-                html=download(url,headers.proxy,num_retries-1,data)
-            else:
-                code=None
-    return html
+# def download(url,headers,proxy,num_retries,data=None):
+#     print('Downloading:',url)
+#     request=urllib.request.Request(url,data,headers)
+#     opener=urllib.request.build_opener()
+#     if proxy:
+#         proxy_params={urlparse.urlparse(url).scheme:proxy}
+#         opener.add_handler(urllib.request.ProxyHandler(proxy_params))
+#     try:
+#         response=opener.open(request)
+#         html=response.read()
+#         code=response.code
+#     except urllib.error.URLError as e:
+#         print ('Download error:',e.reason)
+#         html=''
+#         if hasattr(e,'code'):
+#             code=e.code
+#             if num_retries>0 and  500<=code <=600:
+#                 # retry 5xx errors
+#                 html=download(url,headers.proxy,num_retries-1,data)
+#             else:
+#                 code=None
+#     return html
 
 def normalize(seed_url,link):
     """
@@ -121,7 +120,7 @@ def get_links(html):
     Return a list of links from html
     """
     webpage_regex=re.compile('<a[^>]+href=["\'](.*?)["\']',re.IGNORECASE)
-    #print (type(html))
+    print (type(html))
     if type(html) is bytes:
         html=html.decode()
     elif type(html) is str:
@@ -134,6 +133,6 @@ def get_links(html):
 #         row=[tree.cssselect('table>tr#places_%s__row>td.w2p_fw' % field)[0].text_content() for field in FIELDS]
 #         print (url,row)
 
-if __name__=='__main__':
-    link_crawler('http://example.webscraping.com', '/(index|view)', delay=1, num_retries=1, user_agent='GoodCrawler')
+#if __name__=='__main__':
+   # link_crawler('http://example.webscraping.com', '/(index|view)', delay=1, num_retries=1, user_agent='GoodCrawler')
     #CallBack.prt()
