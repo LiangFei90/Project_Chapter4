@@ -23,10 +23,10 @@ def link_crawler(seed_url,link_regex=None,delay=2,max_depth=-1,max_urls=-1,heade
         url=crawl_quene.pop()
         depth=seen[url]
         if rp.can_fetch(user_agent,url):
-            #Throttle.wait(url)
+            # Throttle.wait(url)
             html=D(url)
-            #html=D.download(url, num_retries=num_retries,headers=None,proxy=proxy)
-            #print('link_',html)
+            # html=D.download(url, num_retries=num_retries,headers=None,proxy=proxy)
+            # print('link_',html)
             links=[]
             if scrape_callback:
                 links.extend(scrape_callback(url,html)or[])
@@ -58,6 +58,7 @@ class Throttle:
         self.delay=delay
         # timestamp of when a domain was last accessed
         self.domains={}
+
     def wait(self,url):
         domain=urllib.parse.urlparse(url).netloc
         last_accessed=self.domains.get(domain)
@@ -123,6 +124,7 @@ def get_links(html):
     print (type(html))
     if type(html) is bytes:
         html=html.decode()
+        #html=html
     elif type(html) is str:
         print(html)
     return webpage_regex.findall(html)

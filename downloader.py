@@ -35,7 +35,7 @@ class Downloader:
             result=self.download(url,headers,proxy,self.num_retries)
             if self.cache:
                 self.cache[url]=result                                                           # Create Foladers and caches and write caches
-        return result['html']                                                                    # MARK
+        return result['html']                                                                                 # MARK
 
     def download(self,url,headers,proxy,num_retries,data=None):
         code=None
