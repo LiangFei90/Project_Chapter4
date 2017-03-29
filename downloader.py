@@ -56,7 +56,7 @@ class Downloader:
             if hasattr(e,'code'):
                 code=e.code
                 if num_retries and 500<=code<600:
-                    return self._get(url,heasers,proxy,num_retries-1,data)
+                    return self.download(url,headers,proxy,num_retries-1,data)
                 else:
                     code = None
         return {'html':html,'coed':code}

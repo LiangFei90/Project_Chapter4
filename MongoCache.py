@@ -8,7 +8,7 @@ class MongoCache:
         #self.db.webpage.create_index({'timestamp':1},{expireAfterSeconds:expires.total_seconds()})
 
     def __getitem__(self,url):
-        record=self.db.webpage.find_one({'_id':url})
+        record=self.db.webpage01.find_one({'_id':url})
         if record:
             return record['result']
         else:
@@ -17,7 +17,7 @@ class MongoCache:
     def __setitem__(self, url, result):
         #record={'result':result,'timestamp':datetime.utcnow()}
         record = {'result': result}
-        self.db.webpage.update({'_id':url},{'$set':record},upsert=True)
+        self.db.webpage01.update({'_id':url},{'$set':record},upsert=True)
 
 if __name__=='__main__':
     begin = datetime.now()

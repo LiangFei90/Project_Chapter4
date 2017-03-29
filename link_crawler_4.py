@@ -16,47 +16,17 @@ def link_crawler(seed_url,link_regex=None,delay=2,max_depth=-1,max_urls=-1,heade
     """
     Crawl from the given seed url follwoing links matched by link_regex
     """
+    links = []
     crawl_quene=[seed_url]
     seen={seed_url:0}
     num_urls=0
-    if ignore_robots is False:
-        rp=get_robots(seed_url)
     D = Downloader(delay=delay, user_agent=user_agent, proxies=proxy, num_retries=num_retries, cache=cache)
-    while crawl_quene:
-        url=crawl_quene.pop()
-        depth=seen[url]
+    html = D(seed_url)
+    if scrape_callback:
+        links.extend(scrape_callback(seed_url, html) or [])
+        for link in links:
+            D(link)
 
-        #   为第四章测试屏蔽robots文件检查
-        # if rp.can_fetch(user_agent,url):
-        #     # Throttle.wait(url)
-        #     html=D(url)
-        #     # html=D.download(url, num_retries=num_retries,headers=None,proxy=proxy)
-        #     # print('link_',html)
-        #     links=[]
-        if True:                                            #
-            html=D(url)                             # 屏蔽上面代码后补此三行代码
-            links=[]                                        #
-            if scrape_callback:
-                links.extend(scrape_callback(url,html)or[])
-            if depth != max_depth:
-                # if link_regex:
-                #     links.extend(link for link in get_links(html)if re.match(link_regex,link))
-
-                for link in links:
-                    link = normalize(seed_url,link)
-                    # check weather already crawled this link
-                    if link not in seen:
-                        seen[link]=depth+1
-                        # check link is within same domain
-                        if same_domain(seed_url,link):
-                            # success! add this new link to quene
-                            crawl_quene.append(link)
-            # check weather have reached dowload maxnum
-            num_urls+=1
-            if num_urls==max_urls:
-                break
-        else:
-            print('Blocked by robots.txt'+url)
 
 class Throttle:
     """
