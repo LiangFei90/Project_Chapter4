@@ -27,7 +27,8 @@ def link_crawler(seed_url,link_regex=None,delay=2,max_depth=-1,max_urls=-1,heade
         depth=seen[url]
         if rp.can_fetch(user_agent,url):
             throttle.wait(url)
-            html=D(url)
+           # html=D(url)
+            html=download(url,headers=headers,proxy=proxy,num_retries=2)
             links=[]
             if scrape_callback:
                 links.extend(scrape_callback(url,html)or[])

@@ -31,10 +31,12 @@ def download(url,user_agent='wswp',proxy=None,num_retries=2):
             if hasattr(e, 'code') and 500 <= e.code < 600:
                 return download(url, user_agent,proxy, num_retries - 1)
     return html
-url = 'http://example.webscraping.com/places/view/United-Kindom-239'
+#url = 'http://example.webscraping.com/places/view/United-Kindom-239'
+url='http://www.alexa.cn/siterank/1'
 html = download(url)
 soup = BeautifulSoup(html,'html.parser')
-tr = soup.find(attrs={'id':'places_area__row'})
-td = tr.find(attrs={'class':'w2p_fw'})
-area = td.text
-print(area)
+# tr = soup.find(attrs={'id':'places_area__row'})
+# td = tr.find(attrs={'class':'w2p_fw'})
+# area = td.text
+#print(area)
+print(soup)

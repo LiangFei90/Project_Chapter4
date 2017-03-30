@@ -26,7 +26,7 @@ class Downloader:
             except KeyError:
                 pass
             else:
-                if self.num_retries > 0 and 500 <= result['code'] < 600:
+                if result['code'] is None or (self.num_retries > 0 and 500 <= result['code'] < 600):
                     result = None
         if result is None:
             self.throttle.wait(url)
@@ -34,7 +34,7 @@ class Downloader:
             headers={'User_agent':self.user_agent}
             result=self.download(url,headers,proxy,self.num_retries)
             if self.cache:
-                self.cache[url]=result                                                           # Create Foladers and caches and write caches
+                self.cache[url]=result
         return result['html']                                                                                 # MARK
 
     def download(self,url,headers,proxy,num_retries,data=None):
@@ -58,8 +58,10 @@ class Downloader:
                 if num_retries and 500<=code<600:
                     return self.download(url,headers,proxy,num_retries-1,data)
                 else:
-                    code = None
-        return {'html':html,'coed':code}
+                    pass
+                    # 修改此处，因为有时有些网页放回code 为403，若不记录此code,，返回空值，28行回报错
+                    # code = None
+        return {'html':html,'code':code}
 
 class Throttle:
     def __init__(self,delay):

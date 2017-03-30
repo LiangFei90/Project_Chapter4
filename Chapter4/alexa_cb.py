@@ -8,7 +8,7 @@ class AleaxCallBack:
     def __init__(self, max_urls=1000):
         self.max_urls = max_urls
         # self.seed_url='http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
-        self.seed_url = 'http://localhost:8000/top-1m.csv.zip'
+        self.seed_url = 'http://localhost:8080/top-1m.csv.zip'
 
     def __call__(self, url, html):
         if url == self.seed_url:

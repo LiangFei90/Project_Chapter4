@@ -17,4 +17,6 @@ def download(url,num_retries=2):
                 return download(url,num_retries-1)
     return html
 if __name__=='__main__':
-    download('http://meetup.com')
+    #print(download('http://meetup.com'))
+    print(download('http://www.alexa.cn/siterank/1'))
+

@@ -16,4 +16,6 @@ def download(url,user_agent='Python-urllib/2.7',num_retries=2):
                 return download(url,user_agent,num_retries-1)
     return html
 if __name__=='__main__':
-    download('http://www.meetup.com')
+
+   html=download('http://www.meetup.com')
+   print(html)

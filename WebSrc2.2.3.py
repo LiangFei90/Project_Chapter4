@@ -23,11 +23,12 @@ def download(url,user_agent='wswp',proxy=None,num_retries=2):
                 return download(url, user_agent,proxy, num_retries - 1)
     return html
 
-url = 'http://example.webscraping.com/places/view/United-Kindom-239'
+#url = 'http://example.webscraping.com/places/view/United-Kindom-239'
+url='http://www.alexa.cn/siterank/1'
 html=download(url)
 tree=lxml.html.fromstring(html)
-td=tree.cssselect('tr#places_area__row>td.w2p_fw')[0]
-area=td.text_content()
-print(area)
-# fixed_html=lxml.html.tostring(tree,pretty_print=True).decode()
-# print (fixed_html)
+# td=tree.cssselect('tr#places_area__row>td.w2p_fw')[0]
+# area=td.text_content()
+# print(area)
+fixed_html=lxml.html.tostring(tree,pretty_print=True).decode()
+print (fixed_html)
