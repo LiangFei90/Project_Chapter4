@@ -12,7 +12,7 @@ class MongoCache:
         if record:
             return record['result']
         else:
-            raise KeyError(url+'does not exist')
+            raise KeyError('does not exist')
 
     def __setitem__(self, url, result):
         #record={'result':result,'timestamp':datetime.utcnow()}

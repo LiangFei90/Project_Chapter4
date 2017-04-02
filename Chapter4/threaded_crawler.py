@@ -14,6 +14,7 @@ def threaded_crawler(seed_url,delay=5,cache=None,scrape_callback=None,user_agent
     seen = set([seed_url])
     D = Downloader(cache=cache,delay=delay,user_agent=user_agent,proxies=proxies,num_retries=num_retries,
                    timeout=timeout)
+
     def process_queue():
         while True:
             try:

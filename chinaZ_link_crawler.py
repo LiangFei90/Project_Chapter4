@@ -43,7 +43,7 @@ def chianz_link_crawler(seed_url,headers=None,proxy=None,user_agent='wswp',scrap
     #while crawl_queue:
     for i in range(len(crawl_queue)):
         url = crawl_queue.pop()[0]
-        result= dowload(url,headers=headers,proxy=proxy,num=i,data=None,cache=cache)#统计下载次数
+        result= dowload(url,headers=headers,proxy=proxy,num=i,data=None,cache=cache)
         html=result['html']
         result['url']=url                                            # 怎么把URL单独传进cache
         result['num']=i
